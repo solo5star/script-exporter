@@ -3,7 +3,7 @@ Shell Script Prometheus Exporter
 
 Just put the `*.sh` into `script` folder and run.
 
-Scripts in `scripts` folder are automatically executed every 5 seconds and outputs are exported via 9091 port.
+Scripts in `scripts` folder are automatically executed every 5 seconds and outputs are exported via http server.
 
 Here is part of the `smartmon.sh` script output.
 ```
