@@ -31,6 +31,7 @@ smartmon_smartctl_version{version="6.6"} 1
 ```bash
 docker run -d \
 	--name script-exporter \
+  --restart unless-stopped \
 	-p 9109:9109 \
 	-v $PWD/scripts:/scripts \
 	solo5star/script-exporter
@@ -43,6 +44,7 @@ services:
   script-exporter:
     container_name: script-exporter
     image: solo5star/script-exporter
+    restart: unless-stopped
     ports:
       - 9109:9109
     volumes:
@@ -77,6 +79,7 @@ services:
   script-exporter:
     container_name: script-exporter
     image: solo5star/script-exporter
+    restart: unless-stopped
     # privileged requires to read disk S.M.A.R.T information
     privileged: true
     ports:
@@ -84,7 +87,7 @@ services:
     volumes:
       - $PWD/scripts:/scripts
       - /dev/disk:/dev/disk:ro
-    environments:
+    environment:
       - REQUIRE_PACKAGES=smartmontools
 ```
 
