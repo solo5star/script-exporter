@@ -1,5 +1,6 @@
 # script-exporter
 Shell Script Prometheus Exporter
+
 Just put the `*.sh` into `script` folder and run.
 
 Scripts in `scripts` folder are automatically executed every 5 seconds and outputs are exported via 9091 port.
@@ -21,6 +22,7 @@ smartmon_smartctl_version{version="6.6"} 1
 * [Configure](#configure)
 * [Recommended Scripts](#recommended-scripts)
 * [Example for S.M.A.R.T Exporter](#example-for-smart-exporter)
+* [Update packages](#update-packages)
 
 <br>
 
@@ -90,6 +92,7 @@ services:
 
 ## Update packages 
 `apt update` is called once when `Dockerfile` is built.
+
 If you have to update packages, Run `apt update` inside a docker container.
 ```bash
 docker exec script-exporter apt update
