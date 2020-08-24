@@ -28,12 +28,14 @@ const REQUIRE_PACKAGES = process.env.REQUIRE_PACKAGES;
 /**
  * Kill handler
  */
-process.on('SIGINT', () => {
+function handleShutdown(){
 	console.log();
 	console.log('Caught interrupt signal');
 
 	process.exit();
-});
+}
+process.on('SIGINT', handleShutdown);
+process.on('SIGTERM', handleShutdown);
 
 
 
@@ -72,17 +74,23 @@ async function scanScripts(){
 	files = (await readdir(SCRIPTS_DIRECTORY))
 		.filter(filename => filename.endsWith('.sh'));
 	
-	scripts = await Promise.all(files.map(async name => ({
+	scripts = files.map(name => ({
 		name: name,
-		script: path.join(SCRIPTS_DIRECTORY, name)
-	})));
+		filename: path.join(SCRIPTS_DIRECTORY, name)
+	}));
+
+	await Promise.all(scripts.map(async script => {
+		script.script = await readFile(script.filename, 'utf8');
+	}));
 }
 
 console.log('------------------------------');
 console.log(`SCRIPTS_DIRECTORY=${SCRIPTS_DIRECTORY}`);
 console.log(`COLLECT_INTERVAL=${COLLECT_INTERVAL}`);
 console.log('------------------------------');
+
 await scanScripts();
+
 console.log(`Scripts found: ${scripts.length}`);
 scripts.forEach(({ name, script }) => console.log(`  * ${name}`));
 console.log('------------------------------');
@@ -115,11 +123,12 @@ async function collect(){
 	// metrics = (await exec('./scripts/smartmon.sh')).stdout;
 }
 
-async function evaluateScript({ name, script }){
+async function evaluateScript({ name, filename, script }){
 	try{
 		return (await exec('/bin/sh -c ' + script)).stdout;
 	}catch(e){
 		console.error(`Error occured while tried to execute script "${name}"`);
+		console.error(`Script location: ${filename}`);
 		console.error(e.message || e);
 	}
 	return '';
