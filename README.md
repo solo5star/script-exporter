@@ -86,6 +86,7 @@ services:
       - 9109:9109
     volumes:
       - $PWD/scripts:/scripts
+      - /sys:/sys:ro
       - /dev/disk:/dev/disk:ro
     environment:
       - REQUIRE_PACKAGES=smartmontools
